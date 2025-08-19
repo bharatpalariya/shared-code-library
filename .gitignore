@@ -38,5 +38,6 @@ mvnw.cmd
 logs/
 .attach_pid*
 
-### macos ###
+### macos system files ###
 .DS_Store
+*/.DS_Store
