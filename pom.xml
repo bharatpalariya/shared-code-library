@@ -10,21 +10,26 @@
 	</parent>
 	<groupId>com.mc</groupId>
 	<artifactId>scl</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>scl</name>
-	<description>Shared Code Library</description>
-	<url/>
+	<version>1.0.0</version>
+	<name>shared-code-library</name>
+	<description>Shared Code Library for Microservices</description>
+	<url>https://github.com/bharatpalariya/shared-code-library</url>
 	<licenses>
-		<license/>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>bharatpalariya</id>
+			<name>Bharat Palariya</name>
+		</developer>
 	</developers>
 	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
+		<connection>scm:git:git://github.com/bharatpalariya/shared-code-library.git</connection>
+		<developerConnection>scm:git:ssh://github.com:bharatpalariya/shared-code-library.git</developerConnection>
+		<url>https://github.com/bharatpalariya/shared-code-library/tree/main</url>
 	</scm>
 	<properties>
 		<java.version>17</java.version>
@@ -39,6 +44,14 @@
 			<url>https://maven.pkg.github.com/bharatpalariya/shared-database-library</url>
 		</repository>
 	</repositories>
+	
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/bharatpalariya/shared-code-library</url>
+		</repository>
+	</distributionManagement>
 	
 	<dependencies>
 		<dependency>
@@ -134,14 +147,32 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<classifier>exec</classifier>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<skip>true</skip>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
