@@ -1,7 +1,6 @@
 package com.mc.scl.security;
 
 import com.mc.scl.security.service.ClientAuthenticationService;
-import com.mc.scl.security.service.UserAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,14 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SpringSecurityConfiguration {
 
-    private final UserAuthenticationService userSessionValidator;
     private final ClientAuthenticationService clientAuthenticationService;
     @Value("${enable-global-swagger:false}")
     private boolean enableGlobalSwagger;
 
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter() {
-        return new CustomAuthenticationFilter(userSessionValidator, clientAuthenticationService);
+        return new CustomAuthenticationFilter(clientAuthenticationService);
     }
 
     @Bean
@@ -35,14 +33,11 @@ public class SpringSecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {
-                    // Conditionally allow Swagger endpoints based on environment config
                     if (enableGlobalSwagger) {
                         authorize.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**").permitAll();
                     }
-                    
                     authorize
-                        .requestMatchers("/client/**").permitAll()      // Filter handles auth
-                        .requestMatchers("/postLogin/**").permitAll()   // Filter handles auth
+                        .requestMatchers("/serviceAuth/**").permitAll()
                         .anyRequest().denyAll();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

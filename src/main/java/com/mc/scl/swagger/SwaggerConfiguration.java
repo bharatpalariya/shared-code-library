@@ -22,7 +22,6 @@ import java.util.Map;
 @Configuration
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
-    @Autowired
     private CommonUtility commonUtility;
 
     @Value("${server.port:8080}")
@@ -34,12 +33,15 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     @Value("${app.name:MC Shared Code Library API}")
     private String appName;
 
+    public SwaggerConfiguration(CommonUtility commonUtility) {
+        this.commonUtility = commonUtility;
+    }
+
     @Bean
     public OpenAPI customOpenAPI() {
         Map<Object, Object> gitProperties = commonUtility.readGitProperties();
-        
         String description = buildDescription(gitProperties);
-        
+
         return new OpenAPI()
                 .info(new Info()
                         .title(appName)
@@ -55,28 +57,26 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                                 .description("Local Development Server")
                 ))
                 .components(new Components()
-                        .addSecuritySchemes("apiKey", new SecurityScheme()
+                        .addSecuritySchemes("serviceCode", new SecurityScheme()
                                 .type(SecurityScheme.Type.APIKEY)
                                 .in(SecurityScheme.In.HEADER)
-                                .name("API-KEY")
-                                .description("API Key for client authentication (clientCode and clientSecret)"))
-                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                                .description("Bearer token for authenticated user operations")));
-
+                                .name("X-Service-Code")
+                                .description("Service Code for authentication"))
+                        .addSecuritySchemes("ServiceAuthKey", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name("X-Service-Auth-Key")
+                                .description("Service Auth Key for authentication")));
     }
 
-    /**
-     * Builds the API description with git information
-     * @param gitProperties Map containing git properties
-     * @return Formatted description string with git information
-     */
     private String buildDescription(Map<Object, Object> gitProperties) {
         StringBuilder description = new StringBuilder();
         description.append("This page lists all the REST APIs for MC Shared Code Library Application.");
-        
+        description.append("\n\n**Authentication Instructions:**");
+        description.append("\n- Provide X-Service-Code header with your Service Code");
+        description.append("\n- Provide X-Service-Auth-Key header with your Service Auth Key");
+        description.append("\n- Both headers are required for authentication");
+
         if (!gitProperties.containsKey(VariablesConstant.RESPONSE)) {
             description.append("\n<div style=\"font-size: 12px;color: #3b4151;margin-top: -12px;font-weight: 300 !important;font-family: Source Code Pro,monospace\">");
             description.append("[ BranchName: ").append(gitProperties.get(VariablesConstant.GIT_BRANCH)).append(" ]</br>");
@@ -84,33 +84,16 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
             description.append("[ CommitTime: ").append(gitProperties.get(VariablesConstant.GIT_COMMIT_TIME)).append(" ]");
             description.append("</div>");
         }
-        
+
         return description.toString();
     }
 
-    /**
-     * Group for Client Resource APIs - requires API Key authentication
-     * This creates a separate OpenAPI spec accessible via dropdown in Swagger UI
-     */
     @Bean
-    public GroupedOpenApi clientResourceApi() {
+    public GroupedOpenApi clientAuthResourceApi() {
         return GroupedOpenApi.builder()
-                .group("Client Resource")
-                .displayName("Client Resource APIs")
-                .pathsToMatch("/client/**")
-                .build();
-    }
-
-    /**
-     * Group for User Resource APIs - requires Bearer token authentication  
-     * This creates a separate OpenAPI spec accessible via dropdown in Swagger UI
-     */
-    @Bean
-    public GroupedOpenApi userResourceApi() {
-        return GroupedOpenApi.builder()
-                .group("User Resources")
-                .displayName("User Resource APIs")
-                .pathsToMatch("/postLogin/**")
+                .group("Service Auth Resource")
+                .displayName("Service Auth Resource APIs")
+                .pathsToMatch("/serviceAuth/**")  // Add serviceAuth paths
                 .build();
     }
 

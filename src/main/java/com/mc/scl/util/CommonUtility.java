@@ -1,9 +1,9 @@
 package com.mc.scl.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
 import com.mc.scl.logger.AppLogger;
 import com.mc.scl.logger.model.LogLayout;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +23,7 @@ public class CommonUtility {
 
     /**
      * Reads git properties from the generated git.properties file
+     *
      * @return Map containing git information (branch, build time, commit time)
      */
     @SuppressWarnings("unchecked")
@@ -30,7 +31,7 @@ public class CommonUtility {
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream("git.properties");
         Map<Object, Object> map = new HashMap<>();
-        
+
         try {
             if (inputStream != null) {
                 map = new ObjectMapper().readValue(readFromInputStream(inputStream), Map.class);
@@ -40,24 +41,25 @@ public class CommonUtility {
         } catch (IOException e) {
             map.put(VariablesConstant.RESPONSE, VariablesConstant.VERSION_INFO_ERROR);
             LogLayout logLayout = new LogLayout(
-                    "ERROR",
-                    "LoggingHandler",
-                    "shared-code-library",
-                    this.getClass().getSimpleName(),
-                    "after",
-                    "",
-                    "",
-                    "",
-                    "Failed to process request logging: " + e.getMessage()
+                    VariablesConstant.ERROR,
+                    VariablesConstant.MODULE_COMMON,
+                    VariablesConstant.COMMON_UTILITY,
+                    this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[1].getMethodName(),
+                    VariablesConstant.EMPTY_STRING,
+                    VariablesConstant.EMPTY_STRING,
+                    VariablesConstant.EMPTY_STRING,
+                    "Failed to process git properties: " + e.getMessage()
             );
             appLogger.writeLog(logLayout, e, null);
         }
-        
+
         return map;
     }
 
     /**
      * Reads content from InputStream and converts to String
+     *
      * @param inputStream the InputStream to read from
      * @return String content of the InputStream
      * @throws IOException if reading fails
