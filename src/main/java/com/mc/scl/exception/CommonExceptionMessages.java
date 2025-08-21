@@ -14,7 +14,10 @@ public enum CommonExceptionMessages {
     VALIDATION_ERROR(3, "Invalid Validation Structure Found."),
     UNAUTHORIZED_SERVICE(4, "Service authentication Failed."),
     INVALID_AUTHENTICATION(5,"Invalid Session Found. Please Try After Some Time."),
-    IP_ADDRESS_MISSING(6, "You Are Not Allowed To Perform This Action.");
+    IP_ADDRESS_MISSING(6, "You Are Not Allowed To Perform This Action."),
+    UNAUTHORIZED_CLIENT(4, "Client authentication failed. Invalid API key"),
+    UNAUTHORIZED_USER(5, "Session Expired! Please Try After Some Time.."),
+    DATA_NOT_FOUND(6, "Data not found");
 
     private final int errorCode;
     private final String message;
