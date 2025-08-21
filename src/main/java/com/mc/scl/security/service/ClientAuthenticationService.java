@@ -35,10 +35,10 @@ public class ClientAuthenticationService {
         String serviceCode = request.getHeader("X-Service-Code");
         String serviceAuthKey = request.getHeader("X-Service-Auth-Key");
         if (Objects.isNull(serviceCode) || serviceCode.trim().isEmpty()) {
-            throw new CommonException(CommonExceptionMessages.INVALID_SERVICE_CODE);
+            throw new CommonException(CommonExceptionMessages.INVALID_AUTHENTICATION);
         }
         if (Objects.isNull(serviceAuthKey) || serviceAuthKey.trim().isEmpty()) {
-            throw new CommonException(CommonExceptionMessages.INVALID_AUTH_KEY);
+            throw new CommonException(CommonExceptionMessages.INVALID_AUTHENTICATION);
         }
         serviceCode = serviceCode.trim();
         serviceAuthKey = serviceAuthKey.trim();

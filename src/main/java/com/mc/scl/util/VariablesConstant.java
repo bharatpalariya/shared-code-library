@@ -14,7 +14,7 @@ public class VariablesConstant {
     public static final String RUNTIME = "runtime";
     public static final String EXCEPTION = "Exception";
     public static final String REQUEST = "request";
-    public static final String LOG_NAME_AUTHENTICATION = "Authentication";
+    public static final String LOG_NAME_AUTHENTICATION = "authentication";
     public static final String MODULE_SECURITY = "security";
     public static final String IP_SEPARATOR = "-";
     public static final String EMPTY_STRING = "";
@@ -28,14 +28,6 @@ public class VariablesConstant {
     public static final String LOGGER = "logger";
     public static final String MODULE_COMMON = "common";
     public static final String COMMON_UTILITY = "commonUtility";
-
-    // Authentication related constants
-    public static final String BEARER_PREFIX = "Bearer ";
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String X_FORWARDED_FOR_HEADER = "X-Forwarded-For";
-    public static final String X_REAL_IP_HEADER = "X-Real-IP";
-    public static final String SERVICE_CODE = "serviceCode";
-    public static final String SERVICE_AUTH_KEY = "serviceAuthKey";
 
     // URL path constants
     public static final String SERVICE_AUTH_PREFIX = "/serviceAuth/";

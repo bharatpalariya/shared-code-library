@@ -52,8 +52,8 @@ import java.lang.annotation.RetentionPolicy;
         )
     },
     security = {
-        @SecurityRequirement(name = "serviceCode"),
-        @SecurityRequirement(name = "ServiceAuthKey")
+        @SecurityRequirement(name = "X-Service-Code"),
+        @SecurityRequirement(name = "X-Service-Auth-Key")
     }
 )
 public @interface ServiceAuthOperation {

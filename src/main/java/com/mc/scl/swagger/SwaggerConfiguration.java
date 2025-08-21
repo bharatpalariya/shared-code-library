@@ -9,7 +9,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,7 @@ import java.util.Map;
 @Configuration
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
-    private CommonUtility commonUtility;
+    private final CommonUtility commonUtility;
 
     @Value("${server.port:8080}")
     private String serverPort;
@@ -32,6 +31,24 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     @Value("${app.name:MC Shared Code Library API}")
     private String appName;
+
+    @Value("${swagger.contact.name:MC Development Team}")
+    private String contactName;
+
+    @Value("${swagger.contact.email:dev@mc.com}")
+    private String contactEmail;
+
+    @Value("${swagger.contact.url:https://mc.com}")
+    private String contactUrl;
+
+    @Value("${swagger.server.description:Local Development Server}")
+    private String serverDescription;
+
+    @Value("${swagger.server.scheme:http}")
+    private String serverScheme;
+
+    @Value("${swagger.server.host:localhost}")
+    private String serverHost;
 
     public SwaggerConfiguration(CommonUtility commonUtility) {
         this.commonUtility = commonUtility;
@@ -48,21 +65,21 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                         .version(appVersion)
                         .description(description)
                         .contact(new Contact()
-                                .name("MC Development Team")
-                                .email("dev@mc.com")
-                                .url("https://mc.com")))
+                                .name(contactName)
+                                .email(contactEmail)
+                                .url(contactUrl)))
                 .servers(List.of(
                         new Server()
-                                .url("http://localhost:" + serverPort)
-                                .description("Local Development Server")
+                                .url(serverScheme + "://" + serverHost + ":" + serverPort)
+                                .description(serverDescription)
                 ))
                 .components(new Components()
-                        .addSecuritySchemes("serviceCode", new SecurityScheme()
+                        .addSecuritySchemes("X-Service-Code", new SecurityScheme()
                                 .type(SecurityScheme.Type.APIKEY)
                                 .in(SecurityScheme.In.HEADER)
                                 .name("X-Service-Code")
                                 .description("Service Code for authentication"))
-                        .addSecuritySchemes("ServiceAuthKey", new SecurityScheme()
+                        .addSecuritySchemes("X-Service-Auth-Key", new SecurityScheme()
                                 .type(SecurityScheme.Type.APIKEY)
                                 .in(SecurityScheme.In.HEADER)
                                 .name("X-Service-Auth-Key")
@@ -71,7 +88,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     private String buildDescription(Map<Object, Object> gitProperties) {
         StringBuilder description = new StringBuilder();
-        description.append("This page lists all the REST APIs for MC Shared Code Library Application.");
+        description.append("This page lists all the REST APIs for the Application.");
         description.append("\n\n**Authentication Instructions:**");
         description.append("\n- Provide X-Service-Code header with your Service Code");
         description.append("\n- Provide X-Service-Auth-Key header with your Service Auth Key");

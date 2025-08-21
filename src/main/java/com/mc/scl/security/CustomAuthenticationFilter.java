@@ -31,57 +31,37 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         if (requestURI.startsWith(VariablesConstant.SERVICE_AUTH_PREFIX)) {
             try {
                 if (!clientAuthenticationService.validateServiceRequest(request)) {
-                    sendErrorResponse(response, CommonExceptionMessages.UNAUTHORIZED_SERVICE);
+                    sendCustomErrorResponse(response, CommonExceptionMessages.UNAUTHORIZED_SERVICE,null,null);
                     return;
                 }
                 filterChain.doFilter(request, response);
                 return;
             } catch (CommonException e) {
-                sendCustomErrorResponse(response, e.getErrorCode(), e.getErrorMessage());
+                sendCustomErrorResponse(response,null, e.getErrorCode(), e.getErrorMessage());
                 return;
             } catch (Exception e) {
-                sendErrorResponse(response, CommonExceptionMessages.UNAUTHORIZED_SERVICE);
+                sendCustomErrorResponse(response,CommonExceptionMessages.UNAUTHORIZED_SERVICE,null,null);
                 return;
             }
         }
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Sends a standardized error response in JSON format
-     */
-    private void sendErrorResponse(HttpServletResponse response, CommonExceptionMessages errorMessage) throws IOException {
-        CommonResponse errorResponse = new CommonResponse(errorMessage);
-
+    private void sendCustomErrorResponse(HttpServletResponse response, CommonExceptionMessages errorMessage, Integer errorCode, String customMessage) throws IOException {
+        CommonResponse errorResponse;
+        if (errorCode != null && customMessage != null) {
+            errorResponse = new CommonResponse();
+            errorResponse.setErrorCode(errorCode);
+            errorResponse.setErrorMessage(customMessage);
+        } else {
+            errorResponse = new CommonResponse(errorMessage);
+        }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
-        // Create ObjectMapper locally for thread safety
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(errorResponse);
-
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();
     }
-
-    /**
-     * Sends a custom error response with specific error code and message
-     */
-    private void sendCustomErrorResponse(HttpServletResponse response, int errorCode, String errorMessage) throws IOException {
-        CommonResponse errorResponse = new CommonResponse();
-        errorResponse.setErrorCode(errorCode);
-        errorResponse.setErrorMessage(errorMessage);
-
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(errorResponse);
-
-        response.getWriter().write(jsonResponse);
-        response.getWriter().flush();
-    }
-
 }
