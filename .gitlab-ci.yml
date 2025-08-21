@@ -1,23 +1,16 @@
-image: maven:3-eclipse-temurin-17
 
-variables:
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-
-stages:
-  - build-sonar
-build-sonar:
-  stage: build-sonar
-  
+sonarqube-check:
+  image: maven:3.9.3-eclipse-temurin-17
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
   cache:
-    policy: pull-push
-    key: "sonar-cache-$CI_COMMIT_REF_SLUG"
+    key: "${CI_JOB_NAME}"
     paths:
-      - "${SONAR_USER_HOME}/cache"
-      - sonar-scanner/
-      
+      - .sonar/cache
   script: 
-    - mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+    - mvn clean install
+    - mvn verify sonar:sonar -Dsonar.projectKey=digital-platform_cam-api-channel_AYuo4KWWWslzVxWSDrbn -Dsonar.plugins.downloadOnlyRequired=false
   allow_failure: false
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
