@@ -1,6 +1,8 @@
 package com.mc.scl.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mc.scl.exception.CommonException;
+import com.mc.scl.exception.CommonExceptionMessages;
 import com.mc.scl.logger.AppLogger;
 import com.mc.scl.logger.model.LogLayout;
 import org.springframework.stereotype.Component;
@@ -73,5 +75,10 @@ public class CommonUtility {
             }
         }
         return resultStringBuilder.toString();
+    }
+
+    void isEmptyOrNull(Boolean bool) {
+        if (Boolean.TRUE.equals(bool))
+            throw new CommonException(CommonExceptionMessages.DATA_NOT_FOUND);
     }
 }
