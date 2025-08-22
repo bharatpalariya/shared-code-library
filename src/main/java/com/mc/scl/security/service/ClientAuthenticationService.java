@@ -1,13 +1,13 @@
 package com.mc.scl.security.service;
 
+import com.mc.scl.auth.dao.ServiceAuthTokenDao;
+import com.mc.scl.auth.entity.ServiceAuthToken;
 import com.mc.scl.exception.CommonException;
 import com.mc.scl.exception.CommonExceptionMessages;
 import com.mc.scl.logger.AppLogger;
 import com.mc.scl.logger.model.LogLayout;
+import com.mc.scl.auth.enums.Status;
 import com.mc.scl.util.VariablesConstant;
-import com.mc.sdl.auth.dao.ServiceAuthTokenDao;
-import com.mc.sdl.auth.entity.ServiceAuthToken;
-import com.mc.sdl.auth.enums.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
