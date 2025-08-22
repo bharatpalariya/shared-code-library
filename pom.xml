@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.mc</groupId>
 	<artifactId>scl</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<name>shared-code-library</name>
 	<description>Shared Code Library for Microservices</description>
 	<url>https://github.com/bharatpalariya/shared-code-library</url>
